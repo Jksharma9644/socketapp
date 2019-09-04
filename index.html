@@ -18,20 +18,58 @@
 
 <script>
 
-$(function(){
-    var socket =io.connect('http://localhost:3000');
-    var message=$("#message");
-    var send_message= $("#send_message");
-    var chatroom =$("#chatroom");
-    send_message.click(function(){
-        socket.emit('new_message',{message:message.val()})
-    })
+// $(function(){
+//     var socket =io.connect('http://localhost:3000');
+//     var message=$("#message");
+//     var send_message= $("#send_message");
+//     var chatroom =$("#chatroom");
+//     send_message.click(function(){
+//         socket.emit('new_message',{message:message.val()})
+//     })
 
-    socket.on('new_message',(data)=>{
-        console.log(data.message)
-        chatroom.append("<p>"+data.message+"</p>") 
-    })
-})
+//     socket.on('new_message',(data)=>{
+//         console.log(data.message)
+//         chatroom.append("<p>"+data.message+"</p>") 
+//     })
+// })
+
+
+
+</script>
+
+<script>
+
+const check = () => {
+  if (!('serviceWorker' in navigator)) {
+    throw new Error('No Service Worker support!')
+  }
+  if (!('PushManager' in window)) {
+    throw new Error('No Push API Support!')
+  }
+}
+
+
+const registerServiceWorker = async () => {
+    const swRegistration = await navigator.serviceWorker.register('service-worker.js'); //notice the file name
+    return swRegistration;
+}
+;
+
+const requestNotificationPermission= async()=>{
+  const permission = await window.Notification.requestPermission();
+    if(permission !== 'granted'){
+        throw new Error('Permission not granted for Notification');
+    }
+}
+
+const main = async () => { //notice I changed main to async function so that I can use await for registerServiceWorker
+    check();
+    const swRegistration = await registerServiceWorker();
+    const permission=await requestNotificationPermission();
+}
+main()
+
+
 </script>
     </body>
 </html>
